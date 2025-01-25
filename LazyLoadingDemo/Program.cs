@@ -1,5 +1,6 @@
 ﻿namespace LazyLoadingDemo
 {
+    //Need to solve one more example from c-sharcorner.com
     internal class Program
     {
         static void Main(string[] args)
