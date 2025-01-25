@@ -7,7 +7,7 @@
             //Trying some LINQ Extension Methods:
             var books = new BookRepository().GetBooks();
             var bookData = books.FirstOrDefault(b => b.Title == "C# Advanced Topics");
-            Console.WriteLine(bookData.Title+" "+bookData.Price);
+            Console.WriteLine(bookData.Title + " " + bookData.Price);
             //There are some other Extensions try it later
             //This are used for pagination.
             //It skips perticular number of data and take data:
@@ -15,20 +15,33 @@
             var pagedBooks = books.Skip(2).Take(3);
             foreach (var pageBook in pagedBooks)
             {
-                Console.WriteLine(pageBook.Title+" "+pageBook.Price);
+                Console.WriteLine(pageBook.Title + " " + pageBook.Price);
             }
             //Let's find maximum price:
             var maxPricedBook = books.FirstOrDefault(b => b.Price == books.Max(b => b.Price));
-            Console.WriteLine("Highly priced book is "+maxPricedBook.Title);
+            Console.WriteLine("Highly priced book is " + maxPricedBook.Title);
             //Count()
             var TotalBooks = books.Count();
-            Console.WriteLine("Total books in shop are "+TotalBooks);
+            Console.WriteLine("Total books in shop are " + TotalBooks);
             //Sum()
             var TotalPrice = books.Sum(b => b.Price);
-            Console.WriteLine("Total price of all books is "+TotalPrice);
+            Console.WriteLine("Total price of all books is " + TotalPrice);
             //Average()
             var avg = books.Average(b => b.Price);
-            Console.WriteLine("Average of book's price is "+avg);
+            Console.WriteLine("Average of book's price is " + avg);
+            Console.WriteLine("Let's find distinct data from books");
+            var distinctData = books.Distinct();
+            foreach (var book in distinctData)
+            {
+                Console.WriteLine(book.Title+" "+book.Price);
+            }
+            //DistinctBy()
+            Console.WriteLine("DistinctBy:");
+            var distinctByData = books.DistinctBy(b => b.Title);
+            foreach (var book in distinctByData)
+            {
+                Console.WriteLine(book.Title+" "+book.Price);
+            }
 
             ////LINQ Query Operators:
             //var books = new BookRepository().GetBooks();
@@ -42,14 +55,13 @@
             //}
 
             ////LINQ Extention Method:
-            ////Here Select query is powerful we get data and pass 
-            ////only single column and their datatype will be there
-            ////Otherwise it will be object.
+            ////Here Select query is powerful we get data and pass String
             //var books = new BookRepository().GetBooks();
             //var cheapBoooks = books.Where(b => b.Price < 10)
             //    .OrderBy(b => b.Title)
-            //    .Select(b => b.Title);
-            //foreach (var book in cheapBoooks);
+            //    .Select(b => "Title " + b.Title + ", Price" + b.Price);
+            //    //.Select(b => b.Title);
+            //foreach (var book in cheapBoooks)
             //{
             //    Console.WriteLine(book);
             //}
