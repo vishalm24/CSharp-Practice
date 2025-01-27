@@ -21,12 +21,14 @@
             oyears.Add(2005);
             ////For IEnumarator:
             IEnumerator<int> enumerator = oyears.GetEnumerator();
+            ////Following won't be going to work. Because we have to use while(enumerator.MoveNext())
+            ////for initializing and for moving to the next iteration.
             //int i = 0;
             //while (enumerator.MoveNext())
             //{
             //    i++;
             //}
-            //for(int j = 0; j<i; j++)
+            //for (int j = 0; j < i; j++)
             //{
             //    enumerator.MoveNext();
             //    Console.WriteLine(enumerator.Current.ToString());
@@ -35,16 +37,17 @@
             ////For IEnumarable
             //IEnumerable<int> enumerable = (IEnumerable<int>)oyears;
             //Enumerable(enumerable);
+            Console.ReadLine();
         }
         ////IEnumerable:
         ////We want to print iEnumarable till 1999 from using method:
         //static void Enumerable(IEnumerable<int> O)
         //{
         //    Console.WriteLine("Printing years till 1999");
-        //    foreach(int item in O)
+        //    foreach (int item in O)
         //    {
         //        Console.WriteLine(item);
-        //        if(item > 2000)
+        //        if (item > 2000)
         //        {
         //            EnumerableNext(O);
         //        }
@@ -67,7 +70,7 @@
         //    while (O.MoveNext())
         //    {
         //        Console.WriteLine(O.Current.ToString());
-        //        if(Convert.ToInt16(O.Current) > 2000)
+        //        if (Convert.ToInt16(O.Current) > 2000)
         //        {
         //            EnumaratorNext(O);
         //        }
