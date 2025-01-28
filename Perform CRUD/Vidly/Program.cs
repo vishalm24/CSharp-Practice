@@ -26,13 +26,16 @@ namespace Vidly
 
             app.UseAuthorization();
 
-            //Not working may be error due to latest version
-            app.MapControllerRoute(
-                "MovieByReleaseDate",
-                "movie/released/{year}/{month}",
-                new { controller = "Movie", action = "ByReleaseDate"},//This is used for mapping given url to controller
-                new { year = "2015 | 2016", month = @"\d{2}"});//by applying 2015 and 2016 we are limiting the years which we want
-                                                               //and by using \d{2} we are ensuring that month field has 2 digits in it
+            ////Not working may be error due to latest version
+            //app.MapControllerRoute(
+            //    "MovieByReleaseDate",
+            //    "movie/released/{year}/{month}",
+            //    new { controller = "Movie", action = "ByReleaseDate" },//This is used for mapping given url to controller
+            //    new { year = "2015 | 2016", month = @"\d{2}" });//by applying 2015 and 2016 we are limiting the years which we want
+            //                                                    //and by using \d{2} we are ensuring that month field has 2 digits in it
+
+            ////This is used for enables adding attributes to controller. Just don't use this for now, Not Working correctly.
+            //app.MapControllers();
 
             app.MapControllerRoute(
                 name: "default",

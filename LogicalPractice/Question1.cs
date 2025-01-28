@@ -28,10 +28,9 @@ namespace LogicalPractice
             }
             for(int i=2; i<arr.Length; i++)
             {
-                if (arr[i] > second)
+                if (arr[i] > second && arr[i] != first)
                 {
-                    
-                    if (arr[i] > first && arr[i] != second)
+                    if (arr[i] > first)
                     {
                         second = first;
                         first = arr[i];
