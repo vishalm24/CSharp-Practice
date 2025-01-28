@@ -9,7 +9,8 @@
             //Question3 question = new Question3();
             //Question4 question = new Question4();
             //Question5 question = new Question5();
-            Question6 question = new Question6();
+            //Question6 question = new Question6();]
+            Question7 question = new Question7();
             question.application();
         }
     }
