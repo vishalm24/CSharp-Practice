@@ -13,13 +13,28 @@ namespace LogicalPractice
         {
             Console.WriteLine("Please enter the number for prime numbers:");
             int input = Convert.ToInt32(Console.ReadLine());
+            List<int> output = new List<int>();
             for(int i = 1; i < input; i++)
             {
                 bool flag = true;
-                for(int j = 1; j < i / 2; j++)
+                for(int j = 2; j <= i / 2; j++)
                 {
-
+                    if (i % j == 0)
+                    {
+                        flag = false;
+                        break;
+                    }
                 }
+                if (flag == true)
+                {
+                    output.Add(i);
+                }
+            }
+            Console.WriteLine($"Prime numbers till {input} are:");
+            Console.Write(output[0]);
+            for(int i = 1; i < output.Count; i++)
+            {
+                Console.Write(", " + output[i]);
             }
         }
     }
