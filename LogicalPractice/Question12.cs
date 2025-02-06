@@ -16,7 +16,7 @@ namespace LogicalPractice
         {
             string input = "Engineer".ToLower();
             Dictionary<char, int> dict = new Dictionary<char, int>();
-            for(int i = 0; i < input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
                 if (dict.ContainsKey(input[i]))
                 {
@@ -25,10 +25,28 @@ namespace LogicalPractice
                 }
                 dict.Add(input[i], 1);
             }
-            foreach(var item in dict)
+            foreach (var item in dict)
             {
-                Console.Write(item.Key+""+ item.Value);
+                Console.Write(item.Key + "" + item.Value);
             }
+            //string str = "Engineer";
+            //Dictionary<char, int> dict = new Dictionary<char, int>();
+            //string input = str.ToLower();
+            //for (int i = 0; i < input.Length; i++)
+            //{
+            //    if (!dict.ContainsKey(input[i]))
+            //    {
+            //        dict.Add(input[i], 1);
+            //    }
+            //    else
+            //    {
+            //        dict[input[i]]++;
+            //    }
+            //}
+            //foreach (var item in dict)
+            //{
+            //    Console.Write(item.Key + item.Value);
+            //}
         }
     }
 }
