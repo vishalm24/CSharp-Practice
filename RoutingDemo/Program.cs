@@ -8,6 +8,10 @@ namespace RoutingDemo
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRouting(options =>
+            {
+                options.ConstraintMap.Add("yearRange", typeof(YearRangeConstraint));
+            });
 
             var app = builder.Build();
 
@@ -26,6 +30,11 @@ namespace RoutingDemo
 
             app.UseAuthorization();
 
+            //app.MapController() used for mapping route by using attributes. But if we wan to use both conventional 
+            //Routing then we should add app.MapControllers before app.MapControllerRoute() because attribute routing comes
+            //top in hierarchy in routing.
+            app.MapControllers();
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}"
@@ -37,7 +46,7 @@ namespace RoutingDemo
             app.MapControllerRoute(
                 name: "MoviesReleaseByDate",
                 pattern: "{controller=Movies}/{action=ByReleasedDate}/{year}/{month}",
-                constraints: new { year = @"\d{4}", month = @"\d{2}" }
+                constraints: new { year=@"\d{4}", month=@"\d{2}" }
                 );
 
             app.Run();
