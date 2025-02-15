@@ -63,5 +63,28 @@ namespace EcommerceApplication.Controllers
             }
             return NotFound();
         }
+        [HttpPut("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(UserDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid Data");
+            }
+            var user = new User
+            {
+                Id = id,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                PhoneNumber = dto.PhoneNumber,
+                Email = dto.Email,
+                Address = dto.Address
+            };
+            var userDetail = _user.UpdateUser(user);
+            if(userDetail == null)
+            {
+                return NotFound("User not found");
+            }
+            return Ok();
+        }
     }
 }

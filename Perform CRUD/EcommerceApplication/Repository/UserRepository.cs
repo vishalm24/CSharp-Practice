@@ -78,16 +78,18 @@ namespace EcommerceApplication.Repository
             return users;
         }
 
-        public async Task UpdateUser(User user)
+        public async Task<User> UpdateUser(User user)
         {
-            var userDetail = new UserAddDto();
+            var userDetail = _context.Users.FirstOrDefault(u => u.Id == user.Id);
+            if(userDetail == null)
+                return null;
             userDetail.FirstName = user.FirstName;
             userDetail.LastName = user.LastName;
-            user.PhoneNumber = user.PhoneNumber;
-            user.Email = user.Email;
-            user.Address = user.Address;
+            userDetail.PhoneNumber = user.PhoneNumber;
+            userDetail.Email = user.Email;
+            userDetail.Address = user.Address;
             _context.Users.Update(userDetail);
-            return;
+            return userDetail;
         }
     }
 }
