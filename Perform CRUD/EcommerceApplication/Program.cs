@@ -20,6 +20,9 @@ namespace EcommerceApplication
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IUser, UserRepository>();
+            builder.Services.AddScoped<ICategory, CategoryRepository>();
+            builder.Services.AddScoped<IProduct, ProductRepository>();
+            builder.Services.AddScoped<IOrder, OrderRepository>();
 
             var app = builder.Build();
 

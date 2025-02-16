@@ -17,7 +17,7 @@ namespace EcommerceApplication.Model
         public string Name { get; set; }
         [Required]
         public float Price { get; set; }
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public bool IsActive { get; set; }

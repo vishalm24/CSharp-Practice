@@ -70,9 +70,9 @@ namespace EcommerceApplication.Controllers
             {
                 return BadRequest("Invalid Data");
             }
-            var user = new User
+            var user = new UserUpdateDto
             {
-                Id = id,
+                Id = dto.Id,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 PhoneNumber = dto.PhoneNumber,
@@ -80,7 +80,7 @@ namespace EcommerceApplication.Controllers
                 Address = dto.Address
             };
             var userDetail = _user.UpdateUser(user);
-            if(userDetail == null)
+            if (userDetail == null)
             {
                 return NotFound("User not found");
             }
