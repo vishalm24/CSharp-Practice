@@ -8,7 +8,7 @@ namespace EcommerceApplication.IRepository
         public Task<IEnumerable<UserDto>> GetUsers();
         public Task<UserDto> GetUserById(Guid id);
         public Task<UserDto> AddUser(UserAddDto user);
-        public Task<bool> DeleteUser(Guid id);
-        public Task<User> UpdateUser(UserUpdateDto userDto);
+        public Task<UserDto> DeleteUser(Guid id);
+        public Task<UserDto> UpdateUser(UserUpdateDto userDto);
     }
 }

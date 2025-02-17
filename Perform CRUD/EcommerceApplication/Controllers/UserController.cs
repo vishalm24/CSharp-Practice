@@ -33,39 +33,24 @@ namespace EcommerceApplication.Controllers
         public async Task<IActionResult> AddUser(UserAddDto userDto)
         {
             if (!ModelState.IsValid) throw new ApplicationException("User details are invalid.");
-            var userDetails = await _user.AddUser(userDto);
-            if (userDetails == null) throw new ApplicationException("User details are invalid.");
-            return Ok();
+            var user = await _user.AddUser(userDto);
+            if (user == null) throw new ApplicationException("User details are invalid.");
+            return Ok(user);
         }
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var user = await _user.DeleteUser(id);
             if (user == null) throw new FileNotFoundException($"No User Found by id = {id}");
-            return user;
+            return Ok(user);
         }
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult> UpdateUser(UserDto dto)
+        public async Task<IActionResult> UpdateUser(UserUpdateDto userDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid Data");
-            }
-            var user = new UserUpdateDto
-            {
-                Id = dto.Id,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
-                Address = dto.Address
-            };
-            var userDetail = _user.UpdateUser(user);
-            if (userDetail == null)
-            {
-                return NotFound("User not found");
-            }
-            return Ok();
+            if (!ModelState.IsValid) throw new ApplicationException("User details are invalid.");
+            var user = await _user.UpdateUser(userDto);
+            if (user == null) throw new FileNotFoundException($"No User Found by id = {userDto.Id}");
+            return Ok(user);
         }
     }
 }

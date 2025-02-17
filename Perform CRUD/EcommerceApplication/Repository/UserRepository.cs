@@ -18,6 +18,7 @@ namespace EcommerceApplication.Repository
         public async Task<UserDto> AddUser(UserAddDto userDto)
         {
             var user = new User();
+            if (user == null) return null;
             user.FirstName = userDto.FirstName;
             user.LastName = userDto.LastName;
             user.PhoneNumber = userDto.PhoneNumber;
@@ -55,17 +56,14 @@ namespace EcommerceApplication.Repository
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
             var userDetail = new UserDto();
-            if (user != null)
-            {
-                userDetail.Id = user.Id;
-                userDetail.FirstName = user.FirstName;
-                userDetail.LastName = user.LastName;
-                userDetail.PhoneNumber = user.PhoneNumber;
-                userDetail.Email = user.Email;
-                userDetail.Address = user.Address;
-                return userDetail;
-            }
-            return null;
+            if (user == null) return null;
+            userDetail.Id = user.Id;
+            userDetail.FirstName = user.FirstName;
+            userDetail.LastName = user.LastName;
+            userDetail.PhoneNumber = user.PhoneNumber;
+            userDetail.Email = user.Email;
+            userDetail.Address = user.Address;
+            return userDetail;
         }
 
         public async Task<IEnumerable<UserDto>> GetUsers()
@@ -87,19 +85,19 @@ namespace EcommerceApplication.Repository
             return users;
         }
 
-        public async Task<User> UpdateUser(UserUpdateDto userDto)
+        public async Task<UserDto> UpdateUser(UserUpdateDto userDto)
         {
-            var userDetail = await _context.Users.FirstOrDefaultAsync(u => u.Id == userDto.Id);
-            if(userDetail == null)
-                return null;
-            userDetail.Id = userDto.Id;
-            userDetail.FirstName = userDto.FirstName;
-            userDetail.LastName = userDto.LastName;
-            userDetail.PhoneNumber = userDto.PhoneNumber;
-            userDetail.Email = userDto.Email;
-            userDetail.Address = userDto.Address;
-            _context.Users.Update(userDetail);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userDto.Id);
+            if(user == null) return null;
+            user.Id = userDto.Id;
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.PhoneNumber = userDto.PhoneNumber;
+            user.Email = userDto.Email;
+            user.Address = userDto.Address;
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
+            var userDetail = await showDetails(user);
             return userDetail;
         }
 
