@@ -63,8 +63,31 @@ namespace EcommerceApplication.Repository
             category.IsActive = false;
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
+            await DeleteProduct(id);
+            await _context.SaveChangesAsync();
             var categoryDetail = ShowDetails(category);
             return categoryDetail;
+        }
+        public async Task DeleteProduct(int id)
+        {
+            var products = _context.Products.ToList().FindAll(p => p.CategoryId == id);
+            foreach (var item in products)
+            {
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == item.Id);
+                await DeleteOrder(item.Id);
+                product.IsActive = false;
+                _context.Products.Update(product);
+            }
+        }
+        public async Task DeleteOrder(int id)
+        {
+            var orders = _context.Orders.ToList().FindAll(o => o.ProductId == id);
+            foreach (var item in orders)
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == item.Id);
+                order.IsActive = false;
+                _context.Orders.Update(order);
+            }
         }
         public CategoryDto ShowDetails(Category category)
         {

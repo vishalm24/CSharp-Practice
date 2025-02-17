@@ -16,10 +16,9 @@ namespace EcommerceApplication.Repository
 
         public async Task<OrderDto> AddOrder(OrderAddDto orderDto)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.UserId == orderDto.UserId);
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == orderDto.ProductId && p.IsActive);
             var customer = await _context.Users.FirstOrDefaultAsync(u => u.Id == orderDto.UserId && u.IsActive);
-            if(order != null || product == null || customer == null) return null;
+            if(product == null || customer == null) return null;
             var orderDetails = new Order
             {
                 UserId = orderDto.UserId,

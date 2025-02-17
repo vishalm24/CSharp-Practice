@@ -1,7 +1,9 @@
 
 using EcommerceApplication.Data;
 using EcommerceApplication.IRepository;
+using EcommerceApplication.Middleware;
 using EcommerceApplication.Repository;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceApplication
@@ -33,10 +35,11 @@ namespace EcommerceApplication
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

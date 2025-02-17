@@ -31,15 +31,28 @@ namespace EcommerceApplication.Repository
             var productDtoDetail = await showDetails(productDetail);
             return productDtoDetail;
         }
+        //Can't apply  await Async on DeleteProduct find reason and rectify it.
         public async Task<ProductDto> DeleteProduct(int id)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && p.IsActive);
+            var product = _context.Products.FirstOrDefault(p => p.Id == id && p.IsActive);
             if (product == null) return null;
             product.IsActive = false;
             _context.Products.Update(product);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+            await DeleteOrder(id);
+            _context.SaveChanges();
             var productDtoDetail = await showDetails(product);
             return productDtoDetail;
+        }
+        public async Task DeleteOrder(int id)
+        {
+            var orders = _context.Orders.ToList().FindAll(o => o.ProductId == id);
+            foreach(var item in orders)
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == item.Id);
+                order.IsActive = false;
+                _context.Orders.Update(order);
+            }
         }
         public async Task<IEnumerable<ProductDto>> GetAllProduct()
         {
@@ -82,7 +95,7 @@ namespace EcommerceApplication.Repository
                 Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
-                CategoryName = await _context.Categories.FirstOrDefaultAsync(c => c.Id == product.CategoryId).Name
+                CategoryName = _context.Categories.FirstOrDefault(c => c.Id == product.CategoryId).Name
             };
             return productDto;
         }

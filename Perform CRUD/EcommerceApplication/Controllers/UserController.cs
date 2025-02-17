@@ -19,49 +19,30 @@ namespace EcommerceApplication.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = _user.GetUsers();
-            if(users == null)
-            {
-                return NotFound("There are no users available");
-            }
+            if(users == null) throw new FileNotFoundException("There is no user available.");
             return Ok(users);
         }
         [HttpGet("GetUserById")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = _user.GetUserById(id);
-            if(user == null)
-            {
-                return NotFound("User not found");
-            }
+            if (user == null) throw new FileNotFoundException($"No User Found by id = {id}");
             return Ok(user);
         }
         [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser(UserDto dto)
+        public async Task<IActionResult> AddUser(UserAddDto userDto)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest("Invalid Data");
-            }
-            var user = new UserAddDto
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
-                Address = dto.Address
-            };
-            await _user.AddUser(user);
+            if (!ModelState.IsValid) throw new ApplicationException("User details are invalid.");
+            var userDetails = await _user.AddUser(userDto);
+            if (userDetails == null) throw new ApplicationException("User details are invalid.");
             return Ok();
         }
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var result = await _user.DeleteUser(id);
-            if (result)
-            {
-                return Ok();
-            }
-            return NotFound();
+            var user = await _user.DeleteUser(id);
+            if (user == null) throw new FileNotFoundException($"No User Found by id = {id}");
+            return user;
         }
         [HttpPut("UpdateUser")]
         public async Task<IActionResult> UpdateUser(UserDto dto)

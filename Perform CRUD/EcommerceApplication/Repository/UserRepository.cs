@@ -15,32 +15,40 @@ namespace EcommerceApplication.Repository
         {
             _context = context;
         }
-        public async Task AddUser(UserAddDto user)
+        public async Task<UserDto> AddUser(UserAddDto userDto)
         {
-            var newUser = new User
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
-                Email = user.Email,
-                Address = user.Address,
-                IsActive = user.IsActive
-            };
-            _context.Users.Add(newUser);
+            var user = new User();
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.PhoneNumber = userDto.PhoneNumber;
+            user.Email = userDto.Email;
+            user.IsActive = userDto.IsActive;
+            _context.Users.Add(user);
+            var userDetails = await showDetails(user);
             await _context.SaveChangesAsync();
-            return;
+            return userDetails;
         }
 
-        public async Task<bool> DeleteUser(Guid id)
+        public async Task<UserDto> DeleteUser(Guid id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
-            if(user !=  null)
+            if (user == null) return null;
+            user.IsActive = false;
+            await _context.SaveChangesAsync();
+            var userDetail = await showDetails(user);
+            await DeleteOrders(id);
+            await _context.SaveChangesAsync();
+            return userDetail;
+        }
+        public async Task DeleteOrders(Guid userId)
+        {
+            var orders =  _context.Orders.ToList().FindAll(o => o.UserId == userId);
+            foreach (var item in orders)
             {
-                user.IsActive = false;
-                _context.SaveChanges();
-                return true;
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == item.Id);
+                order.IsActive = false;
+                _context.Orders.Update(order);
             }
-            return false;
         }
 
         public async Task<UserDto> GetUserById(Guid id)
@@ -91,6 +99,19 @@ namespace EcommerceApplication.Repository
             userDetail.Email = userDto.Email;
             userDetail.Address = userDto.Address;
             _context.Users.Update(userDetail);
+            await _context.SaveChangesAsync();
+            return userDetail;
+        }
+
+        public async Task<UserDto> showDetails(User user)
+        {
+            var userDetail = new UserDto();
+            userDetail.Id = user.Id;
+            userDetail.FirstName = user.FirstName;
+            userDetail.LastName = user.LastName;
+            userDetail.PhoneNumber = user.PhoneNumber;
+            userDetail.Email = user.Email;
+            userDetail.Address = user.Address;
             return userDetail;
         }
     }
