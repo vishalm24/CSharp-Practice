@@ -9,5 +9,6 @@ namespace EcommerceApplication.IRepository
         public Task<ProductDto> AddProduct(ProductAddDto product);
         public Task<ProductDto> UpdateProduct(ProductUpdateDto product);
         public Task<ProductDto> DeleteProduct(int id);
+        public Task<IEnumerable<ProductDto>> CategoryFilter(int id);
     }
 }

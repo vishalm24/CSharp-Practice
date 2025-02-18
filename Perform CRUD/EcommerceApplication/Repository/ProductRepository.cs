@@ -3,6 +3,7 @@ using EcommerceApplication.IRepository;
 using EcommerceApplication.Model;
 using EcommerceApplication.Model.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 
 namespace EcommerceApplication.Repository
 {
@@ -12,6 +13,18 @@ namespace EcommerceApplication.Repository
         public ProductRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public async Task<IEnumerable<ProductDto>> CategoryFilter(int id)
+        {
+            var products = await _context.Products.Where(p => p.CategoryId == id).ToListAsync();
+            if (products == null) return null;
+            var productDetails = new List<ProductDto>();
+            foreach (var item in products)
+            {
+                var productDto = await showDetails(item);
+                productDetails.Add(productDto);
+            }
+            return productDetails;
         }
         public async Task<ProductDto> AddProduct(ProductAddDto productDto)
         {
@@ -31,16 +44,15 @@ namespace EcommerceApplication.Repository
             var productDtoDetail = await showDetails(productDetail);
             return productDtoDetail;
         }
-        //Can't apply  await Async on DeleteProduct find reason and rectify it.
         public async Task<ProductDto> DeleteProduct(int id)
         {
-            var product = _context.Products.FirstOrDefault(p => p.Id == id && p.IsActive);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && p.IsActive);
             if (product == null) return null;
             product.IsActive = false;
             _context.Products.Update(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             await DeleteOrder(id);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             var productDtoDetail = await showDetails(product);
             return productDtoDetail;
         }
@@ -95,7 +107,7 @@ namespace EcommerceApplication.Repository
                 Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
-                CategoryName = _context.Categories.FirstOrDefault(c => c.Id == product.CategoryId).Name
+                CategoryName = product.Category.Name
             };
             return productDto;
         }

@@ -15,6 +15,23 @@ namespace EcommerceApplication.Repository
         {
             _context = context;
         }
+        public async Task<IEnumerable<OrdersByUserIdDto>> OrdersPlacedByUser(Guid id)
+        {
+            var orders = await _context.Orders.Where(o => o.UserId == id && o.IsActive).ToListAsync();
+            var orderDetails = new List<OrdersByUserIdDto>();
+            foreach (var item in orders)
+            {
+                var order = new OrdersByUserIdDto
+                {
+                    orderId = item.Id,
+                    productName = await _context.Products.Where(p => p.Id == item.ProductId).Select(p => p.Name).FirstOrDefaultAsync(),
+                    price = item.Price,
+                    categoryName = await _context.Categories.Where(c => c.Id == _context.Products.First(p => p.Id == item.ProductId).Id).Select(c => c.Name).FirstOrDefaultAsync()
+                };
+                orderDetails.Add(order);
+            }
+            return orderDetails;
+        }
         public async Task<UserDto> AddUser(UserAddDto userDto)
         {
             var user = new User();
@@ -23,6 +40,7 @@ namespace EcommerceApplication.Repository
             user.LastName = userDto.LastName;
             user.PhoneNumber = userDto.PhoneNumber;
             user.Email = userDto.Email;
+            user.Address = userDto.Address;
             user.IsActive = userDto.IsActive;
             _context.Users.Add(user);
             var userDetails = await showDetails(user);
@@ -55,14 +73,8 @@ namespace EcommerceApplication.Repository
         public async Task<UserDto> GetUserById(Guid id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
-            var userDetail = new UserDto();
             if (user == null) return null;
-            userDetail.Id = user.Id;
-            userDetail.FirstName = user.FirstName;
-            userDetail.LastName = user.LastName;
-            userDetail.PhoneNumber = user.PhoneNumber;
-            userDetail.Email = user.Email;
-            userDetail.Address = user.Address;
+            var userDetail = await showDetails(user);
             return userDetail;
         }
 
@@ -71,15 +83,7 @@ namespace EcommerceApplication.Repository
             var users = new List<UserDto>();
             foreach (var item in _context.Users.ToList().FindAll(u => u.IsActive == true))
             {
-                var user = new UserDto
-                {
-                    Id = item.Id,
-                    FirstName = item.FirstName,
-                    LastName = item.LastName,
-                    PhoneNumber = item.PhoneNumber,
-                    Email = item.Email,
-                    Address = item.Address
-                };
+                var user = await showDetails(item);
                 users.Add(user);
             }
             return users;
@@ -99,6 +103,19 @@ namespace EcommerceApplication.Repository
             await _context.SaveChangesAsync();
             var userDetail = await showDetails(user);
             return userDetail;
+        }
+
+        public async Task<IEnumerable<UserDto>> GetUsersByPage(int page)
+        {
+            int pageSize = 5;
+            var users = await _context.Users.Where(u => u.IsActive).OrderBy(u => u.FirstName).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            var userDetails = new List<UserDto>();
+            foreach (var item in users)
+            {
+                var user = await showDetails(item);
+                userDetails.Add(user);
+            }
+            return userDetails;
         }
 
         public async Task<UserDto> showDetails(User user)

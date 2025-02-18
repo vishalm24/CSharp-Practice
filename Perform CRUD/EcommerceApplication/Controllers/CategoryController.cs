@@ -2,6 +2,7 @@
 using EcommerceApplication.Model.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EcommerceApplication.Controllers
 {
@@ -18,7 +19,7 @@ namespace EcommerceApplication.Controllers
         public async Task<IActionResult> GetAllCategory()
         {
             var categories = await _category.GetAllCategory();
-            if (categories == null) throw new FileNotFoundException("There is no category available.");
+            if (categories.IsNullOrEmpty()) throw new FileNotFoundException("There is no category available.");
             return Ok(categories);
         }
         [HttpGet("GetCategoryById")]

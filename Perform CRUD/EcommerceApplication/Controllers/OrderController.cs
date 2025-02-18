@@ -2,6 +2,7 @@
 using EcommerceApplication.Model.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EcommerceApplication.Controllers
 {
@@ -18,7 +19,7 @@ namespace EcommerceApplication.Controllers
         public async Task<IActionResult> GetAllOrders()
         {
             var orders = await _order.GetAllOrders();
-            if (orders == null) throw new FileNotFoundException("There is no order available");
+            if (orders.IsNullOrEmpty()) throw new FileNotFoundException("There is no order available");
             return Ok(orders);
         }
         [HttpGet("GetOrderById")]

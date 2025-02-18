@@ -3,6 +3,7 @@ using EcommerceApplication.Model.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EcommerceApplication.Controllers
 {
@@ -11,18 +12,16 @@ namespace EcommerceApplication.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProduct _product;
-        public ILogger _logger;
-        public ProductController(IProduct product, ILogger<ProductController> logger)
+        public ProductController(IProduct product)
         {
             _product = product;
-            _logger = logger;
         }
 
         [HttpGet("GetAllProducts")]
         public async Task<IActionResult> GetAllProduct()
         {
             var products = await _product.GetAllProduct();
-            if (products == null) throw new FileNotFoundException("There is no product available");
+            if (products.IsNullOrEmpty()) throw new FileNotFoundException("There is no product available");
             return Ok(products);
         }
 
@@ -54,9 +53,17 @@ namespace EcommerceApplication.Controllers
         [HttpDelete("DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = _product.DeleteProduct(id);
+            var product = await _product.DeleteProduct(id);
             if(product == null) throw new FileNotFoundException($"No Product Found by id = {id}");
             return Ok(product);
+        }
+
+        [HttpGet("GetProductsByCategoryId")]
+        public async Task<IActionResult> CategoryFilter(int id)
+        {
+            var products = await _product.CategoryFilter(id);
+            if (products.IsNullOrEmpty()) throw new FileNotFoundException($"No Porducts Found by Category id = {id}");
+            return Ok(products);
         }
     }
 }
