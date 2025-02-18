@@ -96,5 +96,26 @@ namespace EcommerceApplication.Repository
             };
             return orderDto;
         }
+        public async Task<IEnumerable<OrderDto>> GetOrdersByPage(int page)
+        {
+            int pageSize = 5;
+            var orders = await _context.Orders
+                            .Where(o => o.IsActive)
+                            .OrderBy(o => o.Id)
+                            .Skip((page-1)*pageSize)
+                            .Take(pageSize)
+                            .Include(u => u.User)
+                            .Include(p => p.Product)
+                            .Select(o => new OrderDto
+                            {
+                                Id = o.Id,
+                                UserFirstName = o.User.FirstName,
+                                UserLastName = o.User.LastName,
+                                ProductName = o.Product.Name,
+                                Price = o.Product.Price
+                            }).ToListAsync();
+            if (orders == null) return null;
+            return orders;
+        }
     }
 }

@@ -111,5 +111,23 @@ namespace EcommerceApplication.Repository
             };
             return productDto;
         }
+        public async Task<IEnumerable<ProductDto>> GetProductsByPage(int page)
+        {
+            var pageSize = 5;
+            var products = await _context.Products
+                           .Where(p => p.IsActive)
+                           .OrderBy(p => p.Id)
+                           .Skip((page - 1) * pageSize)
+                           .Take(pageSize)
+                           .Include(p => p.Category)
+                           .Select(p => new ProductDto
+                           {
+                               Id = p.Id,
+                               Name = p.Name,
+                               Price = p.Price,
+                               CategoryName = p.Category.Name
+                           }).ToListAsync();
+            return products;
+        }
     }
 }

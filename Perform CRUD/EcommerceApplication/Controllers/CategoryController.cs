@@ -51,5 +51,12 @@ namespace EcommerceApplication.Controllers
             if(category == null) throw new FileNotFoundException($"No Category Found by id = {id}");
             return Ok(category);
         }
+        [HttpGet("GetCategoriesByPage")]
+        public async Task<IActionResult> GetCategoriesByPage(int page)
+        {
+            var categories = await _category.GetCategoriesByPage(page);
+            if (categories.IsNullOrEmpty()) throw new FileNotFoundException($"There are no categories on page = {page}");
+            return Ok(categories);
+        }
     }
 }

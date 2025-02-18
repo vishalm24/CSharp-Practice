@@ -98,5 +98,20 @@ namespace EcommerceApplication.Repository
             };
             return categoryDetail;
         }
+
+        public async Task<IEnumerable<CategoryDto>> GetCategoriesByPage(int page)
+        {
+            int pageSize = 5;
+            var categories = await _context.Categories.Where(c => c.IsActive).OrderBy(c => c.Id).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            var categoriesDetails = new List<CategoryDto>();
+            foreach (var item in categories)
+            {
+                var category = new CategoryDto();
+                category.Id = item.Id;
+                category.Name = item.Name;
+                categoriesDetails.Add(category);
+            }
+            return categoriesDetails;
+        }
     }
 }

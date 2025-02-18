@@ -50,5 +50,12 @@ namespace EcommerceApplication.Controllers
             if (order == null) throw new ApplicationException("Order details are invalid.");
             return Ok(order);
         }
+        [HttpGet("GetOrdersByPage")]
+        public async Task<IActionResult> GetOrdersByPage(int page)
+        {
+            var orders = await _order.GetOrdersByPage(page);
+            if (orders.IsNullOrEmpty()) throw new FileNotFoundException($"There are no orders on page = {page}");
+            return Ok(orders);
+        }
     }
 }

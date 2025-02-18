@@ -9,5 +9,6 @@ namespace EcommerceApplication.IRepository
         public Task<OrderDto> AddOrder(OrderAddDto order);
         public Task<OrderDto> UpdateOrder(OrderUpdateDto order);
         public Task<OrderDto> DeleteOrder(Guid id);
+        public Task<IEnumerable<OrderDto>> GetOrdersByPage(int page);
     }
 }

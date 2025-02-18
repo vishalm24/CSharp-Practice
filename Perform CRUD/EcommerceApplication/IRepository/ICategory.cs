@@ -10,5 +10,6 @@ namespace EcommerceApplication.IRepository
         public Task<CategoryDto> AddCategory(CategoryAddDto CategoryDto);
         public Task<CategoryDto> UpdateCategory(CategoryUpdateDto CategoryDto);
         public Task<CategoryDto> DeleteCategory(int id);
+        public Task<IEnumerable<CategoryDto>> GetCategoriesByPage(int page);
     }
 }
