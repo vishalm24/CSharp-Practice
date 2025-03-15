@@ -109,7 +109,7 @@ namespace EcommerceApplication.Repository
             return userDetail;
         }
 
-        public async Task<PagedResponseOffset> GetUsersByPage(int page)
+        public async Task<PagedResponseOffset<UserDto>> GetUsersByPage(int page)
         {
             int TotalRecords = _context.Users.Where(u => u.IsActive).Count();
             int pageSize = 5;
@@ -128,9 +128,9 @@ namespace EcommerceApplication.Repository
             return pagedResonseOffset;
         }
 
-        public PagedResponseOffset getUserWithPage(List<UserDto> userDetails, int pageSize, int page, int TotalRecords)
+        public PagedResponseOffset<UserDto> getUserWithPage(List<UserDto> userDetails, int pageSize, int page, int TotalRecords)
         {
-            return new PagedResponseOffset(userDetails, pageSize, page, TotalRecords);
+            return new PagedResponseOffset<UserDto>(userDetails, pageSize, page, TotalRecords);
         }
 
         public UserDto showDetails(User user)

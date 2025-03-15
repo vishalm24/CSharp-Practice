@@ -12,6 +12,6 @@ namespace EcommerceApplication.IRepository
         public Task<UserDto> DeleteUser(Guid id);
         public Task<UserDto> UpdateUser(UserUpdateDto userDto);
         public Task<IEnumerable<OrdersByUserIdDto>> OrdersPlacedByUser(Guid id);
-        public Task<PagedResponseOffset> GetUsersByPage(int page);
+        public Task<PagedResponseOffset<UserDto>> GetUsersByPage(int page);
     }
 }
