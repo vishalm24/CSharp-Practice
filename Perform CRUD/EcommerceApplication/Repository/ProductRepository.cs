@@ -21,7 +21,7 @@ namespace EcommerceApplication.Repository
             var productDetails = new List<ProductDto>();
             foreach (var item in products)
             {
-                var productDto = await showDetails(item);
+                var productDto = showDetails(item);
                 productDetails.Add(productDto);
             }
             return productDetails;
@@ -41,7 +41,7 @@ namespace EcommerceApplication.Repository
             };
             _context.Products.Add(productDetail);
             await _context.SaveChangesAsync();
-            var productDtoDetail = await showDetails(productDetail);
+            var productDtoDetail = showDetails(productDetail);
             return productDtoDetail;
         }
         public async Task<ProductDto> DeleteProduct(int id)
@@ -53,7 +53,7 @@ namespace EcommerceApplication.Repository
             await _context.SaveChangesAsync();
             await DeleteOrder(id);
             await _context.SaveChangesAsync();
-            var productDtoDetail = await showDetails(product);
+            var productDtoDetail = showDetails(product);
             return productDtoDetail;
         }
         public async Task DeleteOrder(int id)
@@ -84,7 +84,7 @@ namespace EcommerceApplication.Repository
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && p.IsActive);
             if (product == null) return null;
-            var productDtoDetail = await showDetails(product);
+            var productDtoDetail = showDetails(product);
             return productDtoDetail;
         }
         public async Task<ProductDto> UpdateProduct(ProductUpdateDto productDto)
@@ -97,10 +97,10 @@ namespace EcommerceApplication.Repository
             product.CategoryId = productDto.CategoryId;
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
-            var productDtoDetail = await showDetails(product);
+            var productDtoDetail = showDetails(product);
             return productDtoDetail;
         }
-        public async Task<ProductDto> showDetails(Product product)
+        public ProductDto showDetails(Product product)
         {
             var productDto = new ProductDto
             {
