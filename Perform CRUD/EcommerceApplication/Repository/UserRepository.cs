@@ -2,15 +2,19 @@
 using EcommerceApplication.IRepository;
 using EcommerceApplication.Model;
 using EcommerceApplication.Model.Dto;
+using EcommerceApplication.Pagination;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EcommerceApplication.Repository
 {
     public class UserRepository : IUser
     {
         private readonly ApplicationDbContext _context;
+        private object context;
         public UserRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -43,7 +47,7 @@ namespace EcommerceApplication.Repository
             user.Address = userDto.Address;
             user.IsActive = userDto.IsActive;
             _context.Users.Add(user);
-            var userDetails = await showDetails(user);
+            var userDetails = showDetails(user);
             await _context.SaveChangesAsync();
             return userDetails;
         }
@@ -54,7 +58,7 @@ namespace EcommerceApplication.Repository
             if (user == null) return null;
             user.IsActive = false;
             await _context.SaveChangesAsync();
-            var userDetail = await showDetails(user);
+            var userDetail = showDetails(user);
             await DeleteOrders(id);
             await _context.SaveChangesAsync();
             return userDetail;
@@ -74,7 +78,7 @@ namespace EcommerceApplication.Repository
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
             if (user == null) return null;
-            var userDetail = await showDetails(user);
+            var userDetail = showDetails(user);
             return userDetail;
         }
 
@@ -83,7 +87,7 @@ namespace EcommerceApplication.Repository
             var users = new List<UserDto>();
             foreach (var item in _context.Users.ToList().FindAll(u => u.IsActive == true))
             {
-                var user = await showDetails(item);
+                var user = showDetails(item);
                 users.Add(user);
             }
             return users;
@@ -101,24 +105,35 @@ namespace EcommerceApplication.Repository
             user.Address = userDto.Address;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
-            var userDetail = await showDetails(user);
+            var userDetail = showDetails(user);
             return userDetail;
         }
 
-        public async Task<IEnumerable<UserDto>> GetUsersByPage(int page)
+        public async Task<PagedResponseOffset> GetUsersByPage(int page)
         {
+            int TotalRecords = _context.Users.Where(u => u.IsActive).Count();
             int pageSize = 5;
-            var users = await _context.Users.Where(u => u.IsActive).OrderBy(u => u.FirstName).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            int skipUsers = (page - 1) * pageSize;
+            ////By Raw SQL
+            var users = await _context.Users.FromSqlRaw<User>("spGetCustomerByPage {0}, {1}", skipUsers, pageSize).ToListAsync();
+            ////By LINQ
+            //var users = await _context.Users.Where(u => u.IsActive).OrderBy(u => u.FirstName).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             var userDetails = new List<UserDto>();
             foreach (var item in users)
             {
-                var user = await showDetails(item);
+                var user = showDetails(item);
                 userDetails.Add(user);
             }
-            return userDetails;
+            var pagedResonseOffset = getUserWithPage(userDetails, pageSize, page, TotalRecords);
+            return pagedResonseOffset;
         }
 
-        public async Task<UserDto> showDetails(User user)
+        public PagedResponseOffset getUserWithPage(List<UserDto> userDetails, int pageSize, int page, int TotalRecords)
+        {
+            return new PagedResponseOffset(userDetails, pageSize, page, TotalRecords);
+        }
+
+        public UserDto showDetails(User user)
         {
             var userDetail = new UserDto();
             userDetail.Id = user.Id;

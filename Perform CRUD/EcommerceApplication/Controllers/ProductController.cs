@@ -1,8 +1,12 @@
-﻿using EcommerceApplication.IRepository;
+﻿using EcommerceApplication.Cache;
+using EcommerceApplication.IRepository;
+using EcommerceApplication.Model;
 using EcommerceApplication.Model.Dto;
+using LazyCache;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EcommerceApplication.Controllers
@@ -12,16 +16,27 @@ namespace EcommerceApplication.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProduct _product;
-        public ProductController(IProduct product)
+        private readonly ICacheProvider _cacheProvider;
+        public ProductController(IProduct product, ICacheProvider cacheProvider)
         {
             _product = product;
+            _cacheProvider =  cacheProvider;
         }
 
         [HttpGet("GetAllProducts")]
         public async Task<IActionResult> GetAllProduct()
         {
-            var products = await _product.GetAllProduct();
-            if (products.IsNullOrEmpty()) throw new FileNotFoundException("There is no product available");
+            if(!_cacheProvider.TryGetValue(CacheKeys.Product, out IEnumerable<ProductDto> products))
+            {
+                products = await _product.GetAllProduct();
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(1),
+                    //SlidingExpiration = TimeSpan.FromMinutes(1),
+                    Size = 1024
+                };
+                _cacheProvider.Set(CacheKeys.Product, products, cacheEntryOptions);
+            }
             return Ok(products);
         }
 

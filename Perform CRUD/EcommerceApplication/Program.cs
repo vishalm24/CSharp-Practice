@@ -25,6 +25,8 @@ namespace EcommerceApplication
             builder.Services.AddScoped<ICategory, CategoryRepository>();
             builder.Services.AddScoped<IProduct, ProductRepository>();
             builder.Services.AddScoped<IOrder, OrderRepository>();
+            builder.Services.AddMemoryCache();
+            builder.Services.AddLazyCache();
 
             var app = builder.Build();
 

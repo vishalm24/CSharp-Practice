@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
 
 namespace EcommerceApplication.Middleware
@@ -17,7 +16,7 @@ namespace EcommerceApplication.Middleware
             {
                 await _next(context);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await HandlerExceptionAsync(context, ex);
             }

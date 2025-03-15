@@ -66,7 +66,7 @@ namespace EcommerceApplication.Controllers
         public async Task<IActionResult> GetUsersByPage(int page)
         {
             var users = await _user.GetUsersByPage(page);
-            if(users.IsNullOrEmpty()) throw new FileNotFoundException($"There are no products on page number {page}");
+            if(users == null) throw new FileNotFoundException($"There are no products on page number {page}");
             return Ok(users);
         }
     }

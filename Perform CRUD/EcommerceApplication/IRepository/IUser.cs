@@ -1,5 +1,6 @@
 ﻿using EcommerceApplication.Model;
 using EcommerceApplication.Model.Dto;
+using EcommerceApplication.Pagination;
 
 namespace EcommerceApplication.IRepository
 {
@@ -11,6 +12,6 @@ namespace EcommerceApplication.IRepository
         public Task<UserDto> DeleteUser(Guid id);
         public Task<UserDto> UpdateUser(UserUpdateDto userDto);
         public Task<IEnumerable<OrdersByUserIdDto>> OrdersPlacedByUser(Guid id);
-        public Task<IEnumerable<UserDto>> GetUsersByPage(int page);
+        public Task<PagedResponseOffset> GetUsersByPage(int page);
     }
 }

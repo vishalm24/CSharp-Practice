@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Random";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- This is used for receiving data from movie by viewModel parameter -->
+@*@model VidlyApp.Models.RandomViewModel
+    @{ var className = Model.customers.Count > 5 ? "Populer" : null; }*@
+<!-- This is used for receiving data from movie by viewModel parameter -->
+@*<h2 class="@className">@Model.movie.Name</h2>
+    @if (Model.customers.Count == 0)
+                {
+                    <text>No one Has Rented this Movie</text>
+                }
+    else
+                {
+                    <ul>
+                        @foreach(var item  in Model.customers)
+                    {
+                        <li>@item.Name</li>
+                    }
+                    </ul>
+                }*@
+
+<!-- Following things are used for passing parameters -->
+@*@model VidlyApp.Models.Movie
+    @using VidlyApp.Models*@
+<!-- Following things are used for passing parameters -->
+<!-- Using Model -->
+@*<h2>@Model.Name</h2>*@
+<!-- Using ViewData -->
+@*<h2>@(((Movie)ViewData["Movie"]).Name)</h2>*@
+<!-- Using ViewBag -->
+@*<h2>@ViewBag.Movie.Name</h2>*@
+
+
